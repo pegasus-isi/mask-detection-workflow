@@ -1,0 +1,15 @@
+Pillow 
+numpy
+torchvision
+matplotlib
+pandas 
+torch 
+bs4
+opencv-python 
+optuna
+matplotlib 
+torch
+scikit-image
+torchvision 
+pytorchtools
+joblib
