@@ -130,7 +130,7 @@ train_model = Transformation(
 
 
 tc.add_transformations(augment_imgs, dist_plot, rename_imgs,hpo_model, train_model)
-log.info("writing tc with transformations: {}, containers: {}".format([k for k in tc.transformations], [k for k in tc.containers]))
+logging.info("writing tc with transformations: {}, containers: {}".format([k for k in tc.transformations], [k for k in tc.containers]))
 tc.write()
 
 
