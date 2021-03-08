@@ -78,7 +78,7 @@ rc.write()
 ###################################### TRANSFORMATIONS ###########################################################
 
 # Container for all the jobs
-
+tc = TransformationCatalog()
 mask_detection_wf_cont = Container(
                 "mask_detection_wf",
                 Container.DOCKER,
@@ -128,7 +128,7 @@ train_model = Transformation(
                 container = mask_detection_wf_cont 
             )
 
-tc = TransformationCatalog()
+
 tc.add_transformations(augment_imgs, dist_plot, rename_imgs,hpo_model, train_model)
 log.info("writing tc with transformations: {}, containers: {}".format([k for k in tc.transformations], [k for k in tc.containers]))
 tc.write()
