@@ -210,6 +210,9 @@ def main():
 	    wf.statistics()
 	except PegasusClientError as e:
 	    print(e.output)
+    
+    graph_filename = "mask_detection.dot"
+    wf.graph(include_files=True, no_simplify=True, label="xform-id", output = graph_filename)
 
 
 if __name__ == "__main__":
