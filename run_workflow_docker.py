@@ -23,7 +23,6 @@ props = Properties()
 # set for checkpointing - if jobs fails or timeouts, Pegasus will retry the job 2 times
 # and use the checkpoint to restart the job
 props["dagman.retry"] = "1"
-props["pegasus.transfer.arguments"] = "-m 1"
 props.write()
 
 # DATA AQUSITION
@@ -83,7 +82,7 @@ mask_detection_wf_cont = Container(
                 "mask_detection_wf",
                 Container.DOCKER,
                 image="docker://patkraw/mask-detecton-wf:latest",
-                arguments="--runtime=nvidia --shm-size=15gb"
+                arguments="--runtime=nvidia --shm-size=1gb"
             )
 
 tc.add_containers(mask_detection_wf_cont)
@@ -92,7 +91,7 @@ tc.add_containers(mask_detection_wf_cont)
 dist_plot = Transformation(
                 "dist_plot",
                 site = "condorpool",
-                pfn = os.path.join(os.getcwd(),"bin/plot_class_distribution.py"),
+                pfn = "/app/bin/plot_class_distribution.py",
                 is_stageable = False,
                 container = mask_detection_wf_cont 
             )
@@ -100,14 +99,14 @@ dist_plot = Transformation(
 augment_imgs = Transformation(
                 "augment_images",
                 site = "condorpool",
-                pfn = os.path.join(os.getcwd(),"bin/data_aug.py"),
+                pfn = "/app/bin/data_aug.py",
                 is_stageable = False,
                 container = mask_detection_wf_cont 
             )
 rename_imgs = Transformation(
                 "rename_images",
                 site = "condorpool",
-                pfn = os.path.join(os.getcwd(),"bin/rename_file.py"),
+                pfn = "/app/bin/rename_file.py",
                 is_stageable = False,
                 container = mask_detection_wf_cont 
             )
@@ -115,7 +114,7 @@ rename_imgs = Transformation(
 hpo_model = Transformation(
                 "hpo_script",
                 site = "condorpool",
-                pfn = os.path.join(os.getcwd(),"bin/hpo_train.py"),
+                pfn = "/app/bin/hpo_train.py",
                 is_stageable = False,
                 container = mask_detection_wf_cont 
             )
@@ -123,7 +122,7 @@ hpo_model = Transformation(
 train_model = Transformation(
                 "train_script",
                 site = "condorpool",
-                pfn = os.path.join(os.getcwd(),"bin/train_model.py"),
+                pfn = "/app/bin/train_model.py",
                 is_stageable = False,
                 container = mask_detection_wf_cont 
             )
