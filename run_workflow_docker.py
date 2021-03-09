@@ -196,24 +196,23 @@ hpo_job.add_profiles(Namespace.PEGASUS, key="maxwalltime", value=10)
 
 ###################################### RUN WORKFLOW ###########################################################
 def main():
+	
+	graph_filename = "mask_detection.dot"
+	
 	wf.add_jobs(
 	    distribution_plot_job,
 	    preprocess_train_job,
 	    preprocess_val_job,
 	    preprocess_test_job,
-	 #   hpo_job
+	    hpo_job
 	)
-
 	try:
-	    wf.plan(submit=True)
-	    wf.wait()
-	    wf.statistics()
+		wf.plan(submit=True)
+		wf.wait()
+		wf.statistics()
+		wf.graph(include_files=True, no_simplify=True, label="xform-id", output = graph_filename)
 	except PegasusClientError as e:
 	    print(e.output)
-    
-    graph_filename = "mask_detection.dot"
-    wf.graph(include_files=True, no_simplify=True, label="xform-id", output = graph_filename)
-
 
 if __name__ == "__main__":
     main()
