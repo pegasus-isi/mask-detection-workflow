@@ -23,7 +23,7 @@ import matplotlib.patches as patches
 import time
 import re
 
-#device = torch.device('cpu')
+
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 # ----------- HELPER FUNCTIONS ---------

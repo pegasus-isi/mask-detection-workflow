@@ -22,7 +22,7 @@ import joblib
 import re
 
 
-device = torch.device('cpu')# if torch.cuda.is_available() else torch.device('cpu')
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 
 def generate_box(obj):
