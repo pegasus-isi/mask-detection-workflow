@@ -173,7 +173,7 @@ hpo_job.add_args("--epochs",NUM_EPOCHS, "--trials", NUM_TRIALS)
 hpo_job.add_inputs(*train_preprocessed_files,*train_ann,*val_preprocessed_files,*val_ann)
 hpo_job.add_outputs(File("best_hpo_params.txt"))
 hpo_job.add_checkpoint(mask_detection_pkl_file, stage_out=True)
-hpo_job.add_profiles(Namespace.PEGASUS, key="maxwalltime", value=30)
+hpo_job.add_profiles(Namespace.PEGASUS, key="maxwalltime", value=240)
 
 
 # MODEL TRAINING
