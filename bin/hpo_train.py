@@ -81,15 +81,14 @@ def collate_fn(batch):
 
 
 def get_model_instance_segmentation(num_classes):
-    """
-    initialise model
-    """
+    print("Getting the model defined - currently not pretrained")
     # load an instance segmentation model pre-trained pre-trained on COCO
     model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=False)
     # get number of input features for the classifier
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     # replace the pre-trained head with a new one
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+    print("Model is defined")
     return model
 
 class MaskDataset(object):
@@ -217,6 +216,7 @@ def objective(trial):
     # initialise model
     model = get_model_instance_segmentation(3)
     model.to(device)
+    print("Model is defined and put onto GPU")
    
     losses_dict= {'train': {}, 'test': {}, 'accuracy': {}}
     
@@ -271,9 +271,9 @@ def get_best_params(best):
 def load_study():
     
     try:
-        STUDY = joblib.load("hpo_study_mask_detection.pkl")
-        print("Successfully loaded the existing study!")       
+        STUDY = joblib.load("hpo_study_mask_detection.pkl")      
         rem_trials = TRIALS - len(STUDY.trials_dataframe())
+        print("Successfully loaded the existing study!") 
         
         if rem_trials > 0:
             STUDY.optimize(objective, n_trials=rem_trials, callbacks=[hpo_monitor])
@@ -292,6 +292,7 @@ def load_study():
     return
 
 def main():
+    print("Device the model will be trained with:")
     print(device)
     
     global EPOCHS
