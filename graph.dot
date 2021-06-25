@@ -1,0 +1,89 @@
+digraph G {
+    subgraph cluster_inputs {
+        subgraph cluster_train {
+            train_imgs [shape=box]
+            train_annotations [shape=box]
+            label="train"
+        }
+        
+        subgraph cluster_val {
+            val_imgs [shape=box]
+            val_annotations [shape=box]
+            label="validation"
+        }
+        
+
+        subgraph cluster_test {
+            test_imgs[shape=box]
+            test_annotations [shape=box]
+            label="test"
+        }
+
+        scitech_face_imgs [shape=box]
+        
+        label="inputs"
+    }
+    
+    "class_dist.png" [shape=box]
+    train_annotations -> plot_class_dist
+    val_annotations -> plot_class_dist
+    test_annotations -> plot_class_dist
+    
+    plot_class_dist -> "class_dist.png"
+    
+    augmented_preprocessed_train_imgs [shape=box]
+    preprocessed_val_imgs [shape=box]
+    preprocessed_test_imgs [shape=box]
+    
+    subgraph cluster_preprocess {
+        train_imgs -> preprocess_aug_train
+        val_imgs -> preprocess_val
+        test_imgs -> preprocess_test
+        
+        label="preprocessing"
+    }
+    
+    preprocess_aug_train -> augmented_preprocessed_train_imgs
+    preprocess_val -> preprocessed_val_imgs
+    preprocess_test -> preprocessed_test_imgs
+    
+    "hpo_checkpoint.pkl" [shape=box]
+    "hpo_study.pkl" [shape=box]
+    
+    augmented_preprocessed_train_imgs -> hpo
+    preprocessed_val_imgs -> hpo
+    train_annotations -> hpo
+    val_annotations -> hpo
+    
+    hpo -> "hpo_checkpoint.pkl"
+    hpo -> "hpo_study.pkl"
+    
+    "train_model_checkpoint.pth" [shape=box]
+    
+    augmented_preprocessed_train_imgs -> train_model
+    preprocessed_val_imgs -> train_model
+    preprocessed_test_imgs -> train_model
+    train_annotations -> train_model
+    val_annotations -> train_model
+    test_annotations -> train_model
+    "hpo_study.pkl" -> train_model
+    
+    "trained_model.pth" [shape=box]
+    train_model -> "trained_model.pth"
+    train_model -> "train_model_checkpoint.pth"
+    
+    "trained_model.pth" -> predict_masks
+    scitech_face_imgs -> predict_masks
+    
+    predictions [shape=box]
+    predict_masks -> predictions
+    
+    "trained_model.pth" -> evaluate
+
+    "eval_model.pdf" [shape=box]
+    evaluate -> "eval_model.pdf"
+    
+    
+    label="Mask Detection Workflow"
+    labelloc="t"
+}
