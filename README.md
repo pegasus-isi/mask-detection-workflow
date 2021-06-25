@@ -28,6 +28,7 @@ This is a research intern project by Kelsie Lam.
 <img src="imgs/MaskDetection.png" />
 
 ### Detail view of jobs in the Workflow
+![workflow](imgs/graph.png)
 <img src="imgs/mask_dectection_wf.png" />
 
 
