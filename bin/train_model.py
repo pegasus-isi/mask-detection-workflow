@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 """
-MACHINE LEARNING WORKFLOWS 
+MACHINE LEARNING WORKFLOWS
 
 Model Training
 """
-import glob,os
+import glob,os, sys
 import numpy as np 
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -38,6 +38,7 @@ def generate_box(obj):
     ymax = int(obj.find('ymax').text)
     
     return [xmin, ymin, xmax, ymax]
+
 
 def generate_label(obj):
     """
@@ -75,9 +76,8 @@ def generate_target(image_id, file):
         target["boxes"] = boxes
         target["labels"] = labels
         target["image_id"] = img_id
-
-        
         return target
+
 
 def collate_fn(batch):
     return tuple(zip(*batch))
@@ -94,7 +94,6 @@ def get_model_instance_segmentation(num_classes):
     # replace the pre-trained head with a new one
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
     return model
-# ----------------------------------------------------------------
 
 
 #-------------- DATASET CLASS ------------------------------------
@@ -199,18 +198,10 @@ def train(train_loader, model, criterion, optimizer, epoch, device):
     
     return model, train_loss
 
-def save_checkpoint(model, epoch):
-    """
-    saves model checkpoint along with epoch value
-    """
-    ckpt_path = 'mask_detection_model.pth'
-    torch.save({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict()}, ckpt_path)
 
-def get_params():
+def get_params(params_file):
     try:
-        f = open("best_hpo_params.txt","r")
+        f = open(params_file,"r")
         params = f.readline()
         params = eval(params)
         lr = float(params['params']['lr'])
@@ -222,8 +213,9 @@ def get_params():
     
     return lr, optim
 
+
 ### --------------------TRAIN MODEL--------------------------------
-def main():
+def run_model(params_file,model_file):
 
     data_transform = transforms.Compose([transforms.ToTensor(),])
     
@@ -233,7 +225,7 @@ def main():
     
     # create data-loaders
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=1,shuffle=True, collate_fn=collate_fn)
-    test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=1,shuffle=True, collate_fn=collate_fn)
+    test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=1,shuffle=True, collate_fn=collate_fn)    
     
     # initialise model
     model = get_model_instance_segmentation(3)
@@ -242,7 +234,7 @@ def main():
     losses_dict= {'train': {}, 'test': {}, 'accuracy': {}}
     criterion = torch.nn.NLLLoss()
     epochs = 2
-    lr, optim = get_params()
+    lr, optim = get_params(params_file)
     params = [p for p in model.parameters() if p.requires_grad]
     if optim == "Adam":
         optimizer = torch.optim.Adam(params, lr=lr)
@@ -256,10 +248,14 @@ def main():
         current_metrics = [e,train_loss, test_loss]
         losses_dict["train"][e] = train_loss
         losses_dict["test"][e] = test_loss
-        if (e+1) % 2 == 0:
-            save_checkpoint(model, e)
+
+    #save the entire model
+    torch.save(model.state_dict(),model_file)
+    
     return
 
 
 if __name__ == "__main__":
-    main()
+    params_file = sys.argv[1]
+    model_file = sys.argv[2]
+    run_model(params_file,model_file)
