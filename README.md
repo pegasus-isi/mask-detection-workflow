@@ -8,10 +8,6 @@ The workflow uses **images of masks on faces** and **annotations** related to ea
 * not wearing a mask
 * wearing a mask incorrectly
 
-<img src="imgs/classes.png" style="width: 400px;"/>
-<br>
-<img src="imgs/sample_output.png" style="width: 600px;"/>
-
 The dataset is split into training, validation, and test sets before the workflow starts.  The **Pre-processing** step and Data Augmentation of Images is done to resize images and normalize them to make sure the data is consistent among all classes and also to avoid class imbalance. Additionally, **image augmentation** is done by injecting Gaussian noise. Next, the train and validation data are passed to the **hyperparameter optimization** step, where different learning rates are explored. The **training** of **FastRCNN** model is done with the recommended learning rate on the concatenated train and validation set, and obtains the weights. Then the **evaluation** is performed test set in order to generate a txt file with the scores for relevant performance metrics like average running loss. Finally, **predictions** can be made with any user input images using the trained model and show mask detection results.
 
 **Machine Learning steps in the workflow :**
@@ -56,5 +52,5 @@ The dataset is split into training, validation, and test sets before the workflo
 <img src="imgs/group_mask_detection.png" />
 
 ### Authors
-Project by Kelsie Lam, research intern.
+Project by Kelsie Lam, research intern.<br>
 Updated by Zaiyan Alam.
