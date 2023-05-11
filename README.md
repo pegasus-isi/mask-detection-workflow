@@ -48,7 +48,7 @@ The dataset is split into training, validation, and test sets before the workflo
 
 ### Results
 <img src="imgs/prediction.png" />
-<img src="imgs/cm.png" />
+<img src="imgs/cm.png" style="width: 400px;/>
 <img src="imgs/group_mask_detection.png" />
 
 ### Authors
